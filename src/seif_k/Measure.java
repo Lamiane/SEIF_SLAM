@@ -2,6 +2,8 @@ package seif_k;
 
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.SensorPort;
+import lejos.nxt.UltrasonicSensor;
 
 /**
  * @author Ksiaze Lobozow
@@ -10,9 +12,10 @@ public class Measure {
     private final NXTRegulatedMotor right = Motor.A;
     private final NXTRegulatedMotor left = Motor.B;
     private final NXTRegulatedMotor head = Motor.C;
+    private final UltrasonicSensor eyes = new UltrasonicSensor(SensorPort.S4);
 
     public int[] run(){
-        int[] measurementsArray = new int[6];
+        int[] measurementsArray = new int[7];
         int[] tmp = this.getHead();
         measurementsArray[0]=tmp[0];
         measurementsArray[1]=tmp[1];
@@ -22,6 +25,7 @@ public class Measure {
         tmp=this.getRight();
         measurementsArray[4]=tmp[0];
         measurementsArray[5]=tmp[1];
+        measurementsArray[6]=this.getDistance();
         return measurementsArray;
     };
     
@@ -44,5 +48,14 @@ public class Measure {
         vector[0] = right.getTachoCount();
         vector[1] = right.getSpeed();
         return vector;
+    }
+    
+    private int getDistance(){
+        int distance = eyes.getDistance();
+        //if nothing was seen
+        if (255==distance){
+            distance=-1;
+        }
+        return distance;
     }
 }
